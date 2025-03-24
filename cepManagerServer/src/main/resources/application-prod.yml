@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://postgres:5432/dbcepmanager
+    url: jdbc:postgresql://localhost:5432/dbcepmanager
     username: admin
     password: admin
     driver-class-name: org.postgresql.Driver
@@ -8,5 +8,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+api:
+  webclient:
+    base-url: https://viacep.com.br/ws/
 server:
   port: 8080
