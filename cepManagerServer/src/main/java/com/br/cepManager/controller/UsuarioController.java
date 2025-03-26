@@ -9,6 +9,8 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/user")
 public class UsuarioController {
@@ -23,5 +25,15 @@ public class UsuarioController {
     public ResponseEntity<Usuarios> createUser(@RequestBody UsuariosDTO usuariosDTO) {
         Usuarios usuarios = usuariosService.criarUsuario(usuariosDTO);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> buscarUsuario(@PathVariable Long id) {
+        Optional<UsuariosDTO> usuariosDTO = usuariosService.buscarUsuarioPorId(id);
+        if (usuariosDTO.isPresent()) {
+            return ResponseEntity.ok().body(usuariosDTO.get());
+        }
+        String message = "Usuário não encontrado com o ID: " + id;
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
     }
 }

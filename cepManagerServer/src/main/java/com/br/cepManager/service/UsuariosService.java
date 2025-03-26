@@ -6,6 +6,7 @@ import com.br.cepManager.repository.UsuariosRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class UsuariosService {
@@ -29,5 +30,25 @@ public class UsuariosService {
         usuarios.setData_atualizacao(LocalDateTime.now());
 
         return usuariosRepository.save(usuarios);
+    }
+
+    public Optional<UsuariosDTO> buscarUsuarioPorId(Long id) {
+        Optional<Usuarios> usuarios = usuariosRepository.findAllById(id);
+        return usuarios.map(this::converterUsuariosDTO);
+    }
+
+    private UsuariosDTO converterUsuariosDTO(Usuarios usuarios) {
+        return new UsuariosDTO(
+                usuarios.getId(),
+                usuarios.getNome(),
+                usuarios.getCpf(),
+                usuarios.getCep(),
+                usuarios.getLogradouro(),
+                usuarios.getBairro(),
+                usuarios.getCidade(),
+                usuarios.getEstado(),
+                usuarios.getData_criacao(),
+                usuarios.getData_atualizacao()
+        );
     }
 }
