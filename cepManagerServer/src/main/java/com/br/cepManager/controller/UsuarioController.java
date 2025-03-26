@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -48,5 +49,11 @@ public class UsuarioController {
                     .contentType(MediaType.TEXT_PLAIN).body(message);
         }
         return ResponseEntity.ok().body(usuariosDTOS);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UsuariosDTO> atualizarUsuario(@PathVariable Long id, @RequestBody UsuariosDTO usuariosDTO) {
+        UsuariosDTO usuariosDTOs = usuariosService.atualizarUsuario(id, usuariosDTO);
+        return ResponseEntity.ok().body(usuariosDTOs);
     }
 }

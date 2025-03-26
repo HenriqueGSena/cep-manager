@@ -2,8 +2,11 @@ package com.br.cepManager.service;
 
 import com.br.cepManager.dto.UsuariosDTO;
 import com.br.cepManager.entities.Usuarios;
+import com.br.cepManager.exceptions.CeptNotFoundException;
 import com.br.cepManager.repository.UsuariosRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -45,6 +48,24 @@ public class UsuariosService {
         return usuarios.stream()
                 .map(this::converterUsuariosDTO)
                 .collect(Collectors.toList());
+    }
+
+    public UsuariosDTO atualizarUsuario(Long id, UsuariosDTO usuariosDTO) {
+        Optional<Usuarios> usuarios = usuariosRepository.findById(id);
+        if (usuarios.isPresent()) {
+            Usuarios atualizarUsuario = usuarios.get();
+            atualizarUsuario.setNome(usuariosDTO.getNome());
+            atualizarUsuario.setCpf(usuariosDTO.getCpf());
+            atualizarUsuario.setCep(usuariosDTO.getCep());
+            atualizarUsuario.setLogradouro(usuariosDTO.getLogradouro());
+            atualizarUsuario.setBairro(usuariosDTO.getBairro());
+            atualizarUsuario.setCidade(usuariosDTO.getCidade());
+            atualizarUsuario.setEstado(usuariosDTO.getEstado());
+            atualizarUsuario.setData_atualizacao(LocalDateTime.now());
+            return converterUsuariosDTO(usuariosRepository.save(atualizarUsuario));
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário com ID " + id + " não encontrado.");
+        }
     }
 
     private UsuariosDTO converterUsuariosDTO(Usuarios usuarios) {
