@@ -51,9 +51,15 @@ public class UsuarioController {
         return ResponseEntity.ok().body(usuariosDTOS);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<UsuariosDTO> atualizarUsuario(@PathVariable Long id, @RequestBody UsuariosDTO usuariosDTO) {
         UsuariosDTO usuariosDTOs = usuariosService.atualizarUsuario(id, usuariosDTO);
         return ResponseEntity.ok().body(usuariosDTOs);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deletarDadosUsuario(@PathVariable Long id) {
+        usuariosService.deletarUsuario(id);
+        return ResponseEntity.noContent().build();
     }
 }

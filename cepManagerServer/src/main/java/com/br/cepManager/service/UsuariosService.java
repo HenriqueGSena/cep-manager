@@ -68,6 +68,15 @@ public class UsuariosService {
         }
     }
 
+    public void deletarUsuario(Long id) {
+        Optional<Usuarios> usuarios = usuariosRepository.findById(id);
+        if (usuarios.isPresent()) {
+            usuariosRepository.deleteById(id);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário com ID " + id + " não encontrado.");
+        }
+    }
+
     private UsuariosDTO converterUsuariosDTO(Usuarios usuarios) {
         return new UsuariosDTO(
                 usuarios.getId(),
