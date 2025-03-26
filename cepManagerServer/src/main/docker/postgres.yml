@@ -1,0 +1,17 @@
+version: '3.8'
+name: cep-manager-database
+services:
+  postgres:
+    image: postgres:16
+    container_name: db-cepmanager
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: dbcepmanager
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+volumes:
+  postgres_data:
