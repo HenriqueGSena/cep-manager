@@ -6,7 +6,10 @@ import com.br.cepManager.repository.UsuariosRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Service
 public class UsuariosService {
@@ -35,6 +38,13 @@ public class UsuariosService {
     public Optional<UsuariosDTO> buscarUsuarioPorId(Long id) {
         Optional<Usuarios> usuarios = usuariosRepository.findAllById(id);
         return usuarios.map(this::converterUsuariosDTO);
+    }
+
+    public List<UsuariosDTO> listarTodosUsuarios() {
+        List<Usuarios> usuarios = usuariosRepository.findAll();
+        return usuarios.stream()
+                .map(this::converterUsuariosDTO)
+                .collect(Collectors.toList());
     }
 
     private UsuariosDTO converterUsuariosDTO(Usuarios usuarios) {
