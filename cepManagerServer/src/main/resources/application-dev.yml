@@ -4,6 +4,9 @@ spring:
     username: admin
     password: admin
     driver-class-name: org.postgresql.Driver
+  liquibase:
+    change-log: classpath:/config/liquibase/master.xml
+    enabled: true
   jpa:
     properties:
       hibernate:

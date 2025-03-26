@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <property name="now" value="NOW()" dbms="postgresql"/>
+    <property name="floatType" value="REAL" dbms="postgresql"/>
+    <property name="uuidType" value="UUID" dbms="postgresql"/>
+    <property name="datetimeType" value="TIMESTAMP" dbms="postgresql"/>
+    <property name="clobType" value="TEXT" dbms="postgresql"/>
+    <property name="blobType" value="BYTEA" dbms="postgresql"/>
+
+    <include file="/config/liquibase/changelog/20250326102048_create_usuarios.xml" relativeToChangelogFile="false"/>
+</databaseChangeLog>
