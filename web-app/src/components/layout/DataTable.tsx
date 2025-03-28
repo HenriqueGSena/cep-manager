@@ -1,13 +1,21 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../ui/table";
+import { useQuery } from "@tanstack/react-query";
+import { findListUsers } from '../../service/api';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 
 export function DataTable() {
+  const { data, isLoading, error } = useQuery ({
+    queryKey: ['itens'],
+    queryFn: findListUsers,
+  });
+
+  if (isLoading) {
+    return <p>Carrengando dados de usuarios</p>
+  }
+
+  if (error) {
+    return <p>Erro ao carregar os dados</p>
+  }
+
   return (
     <div className="border rounded-lg p-2">
       <Table>
@@ -21,16 +29,16 @@ export function DataTable() {
           <TableHead>Estado</TableHead>
         </TableHeader>
         <TableBody>
-          {Array.from({ length: 15 }).map((_, i) => {
+          {data?.map((item: any) => {
             return (
-              <TableRow key={i}>
-                <TableCell>oi</TableCell>
-                <TableCell>oi</TableCell>
-                <TableCell>oi</TableCell>
-                <TableCell>oi</TableCell>
-                <TableCell>oi</TableCell>
-                <TableCell>oi</TableCell>
-                <TableCell>oi</TableCell>
+              <TableRow key={item.id}>
+                <TableCell>{item.nome}</TableCell>
+                <TableCell>{item.cpf}</TableCell>
+                <TableCell>{item.cep}</TableCell>
+                <TableCell>{item.logradouro}</TableCell>
+                <TableCell>{item.bairro}</TableCell>
+                <TableCell>{item.cidade}</TableCell>
+                <TableCell>{item.estado}</TableCell>
               </TableRow>
             );
           })}
