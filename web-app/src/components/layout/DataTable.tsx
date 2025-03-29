@@ -12,7 +12,7 @@ import { DataTableProps } from "@/utlis/DataTableProps";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { RegisterDialog } from "./RegisterDialog";
-import { useDeleteUserMutate } from "../../hooks/useDeleteUserMutate"; // Importe a mutação
+import { useDeleteUserMutate } from "../../hooks/useDeleteUserMutate";
 
 export function DataTable({ search }: DataTableProps) {
   const { data, isLoading, error, refetch } = useQuery({
@@ -53,7 +53,7 @@ export function DataTable({ search }: DataTableProps) {
   };
 
   const handleDeleteClick = (id: number) => {
-    deleteUser(id); // Chama a mutação para deletar o usuário
+    deleteUser(id);
   };
 
   if (isLoading) return <p>Carrengando...</p>;
@@ -95,8 +95,8 @@ export function DataTable({ search }: DataTableProps) {
                       Editar
                     </Button>
                     <Button
-                      onClick={() => handleDeleteClick(user.id)} // Ação para deletar
-                      disabled={isPending} // Desabilita o botão enquanto a mutação está em andamento
+                      onClick={() => handleDeleteClick(user.id)}
+                      disabled={isPending}
                     >
                       {isPending ? "Deletando..." : "Deletar"}
                     </Button>
