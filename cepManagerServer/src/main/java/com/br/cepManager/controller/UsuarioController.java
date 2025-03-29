@@ -32,17 +32,6 @@ public class UsuarioController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{id}")
-    @Operation(summary = "Busca por usuário através do ID", description = "Realiza uma busca no banco pelo usuário com base no ID")
-    public ResponseEntity<?> buscarUsuario(@PathVariable Long id) {
-        Optional<UsuariosDTO> usuariosDTO = usuariosService.buscarUsuarioPorId(id);
-        if (usuariosDTO.isPresent()) {
-            return ResponseEntity.ok().body(usuariosDTO.get());
-        }
-        String message = "Usuário não encontrado com o ID: " + id;
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-    }
-
     @GetMapping("/list")
     @Operation(summary = "Listar usuários", description = "Retorna uma lista de todos os usuários cadastrados no sistema.")
     public ResponseEntity<?> listarUsuarios() {
