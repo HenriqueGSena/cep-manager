@@ -12,12 +12,20 @@ import { DataTableProps } from "@/utlis/DataTableProps";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { RegisterDialog } from "./RegisterDialog";
+import { useDeleteUserMutate } from "../../hooks/useDeleteUserMutate"; // Importe a mutação
 
 export function DataTable({ search }: DataTableProps) {
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["itens"],
     queryFn: findListUsers,
   });
+
+  const {
+    mutate: deleteUser,
+    isPending,
+    isError,
+    error: deleteError,
+  } = useDeleteUserMutate(); // Use a mutação
 
   const sortedData = data ? [...data].sort((a, b) => b.id - a.id) : [];
 
@@ -42,6 +50,10 @@ export function DataTable({ search }: DataTableProps) {
     setUserToEdit(null);
     setIsEditDialogOpen(false);
     refetch();
+  };
+
+  const handleDeleteClick = (id: number) => {
+    deleteUser(id); // Chama a mutação para deletar o usuário
   };
 
   if (isLoading) return <p>Carrengando...</p>;
@@ -82,11 +94,12 @@ export function DataTable({ search }: DataTableProps) {
                     <Button onClick={() => handleEditClick(user)}>
                       Editar
                     </Button>
-                    {/* <Button
-                      onClick={() => handleDelete(user.id)}
+                    <Button
+                      onClick={() => handleDeleteClick(user.id)} // Ação para deletar
+                      disabled={isPending} // Desabilita o botão enquanto a mutação está em andamento
                     >
-                      Deletar
-                    </Button> */}
+                      {isPending ? "Deletando..." : "Deletar"}
+                    </Button>
                   </div>
                 </TableCell>
               </TableRow>

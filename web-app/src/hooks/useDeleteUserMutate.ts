@@ -9,15 +9,15 @@ const deleteUser = async (id: number) => {
 export function useDeleteUserMutate() {
     const queryClient = useQueryClient();
 
-    const mutate = useMutation({
+    const { mutate, isPending, isError, error, reset } = useMutation({
         mutationFn: deleteUser,
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['itens'] })
+            queryClient.invalidateQueries({ queryKey: ['itens'] });
         },
         onError: (error) => {
             console.error("Erro ao deletar usuário:", error);
         }
     });
 
-    return mutate;
+    return { mutate, isPending, isError, error, reset };
 }
