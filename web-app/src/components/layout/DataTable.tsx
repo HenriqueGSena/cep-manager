@@ -8,13 +8,10 @@ export function DataTable() {
     queryFn: findListUsers,
   });
 
-  if (isLoading) {
-    return <p>Carrengando dados de usuarios</p>
-  }
+  if (isLoading) return <p>Carrengando...</p>;
+  if (error) return <p>Erro ao carregar os dados</p>;
 
-  if (error) {
-    return <p>Erro ao carregar os dados</p>
-  }
+  const sortedData = data ? [...data].sort((a, b) => b.id - a.id) : [];
 
   return (
     <div className="border rounded-lg p-2">
@@ -29,7 +26,7 @@ export function DataTable() {
           <TableHead>Estado</TableHead>
         </TableHeader>
         <TableBody>
-          {data?.map((item: any) => {
+          {sortedData?.map((item: any) => {
             return (
               <TableRow key={item.id}>
                 <TableCell>{item.nome}</TableCell>
