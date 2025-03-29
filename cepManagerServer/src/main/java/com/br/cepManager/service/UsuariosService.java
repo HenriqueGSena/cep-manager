@@ -38,11 +38,6 @@ public class UsuariosService {
         return usuariosRepository.save(usuarios);
     }
 
-    public Optional<UsuariosDTO> buscarUsuarioPorId(Long id) {
-        Optional<Usuarios> usuarios = usuariosRepository.findAllById(id);
-        return usuarios.map(this::converterUsuariosDTO);
-    }
-
     public List<UsuariosDTO> listarTodosUsuarios() {
         List<Usuarios> usuarios = usuariosRepository.findAll();
         return usuarios.stream()
