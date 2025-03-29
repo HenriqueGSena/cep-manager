@@ -16,9 +16,25 @@ import { useCreateUserMutate } from "@/hooks/useCreateUserMutate";
 import { useEffect, useState } from "react";
 import { Usuarios } from "@/utlis/Ususarios";
 import { useFindAddress } from "@/hooks/useFindAddress";
+import { useUpdateUserMutate } from "@/hooks/useUpdateUserMutate";
 
-export function RegisterDialog() {
-  const { mutate, isPending, isSuccess, isError } = useCreateUserMutate();
+interface RegisterDialogProps {
+  userToEdit?: Usuarios;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onClose?: () => void;
+}
+
+export function RegisterDialog({
+  userToEdit,
+  open,
+  onOpenChange,
+  onClose,
+}: RegisterDialogProps) {
+  const { mutate: createMutate, isPending: isCreatePending } =
+    useCreateUserMutate();
+  const { mutate: updateMutate, isPending: isUpdatePending } =
+    useUpdateUserMutate();
   const [formData, setFormData] = useState<Omit<Usuarios, "id">>({
     nome: "",
     cpf: "",
@@ -28,6 +44,7 @@ export function RegisterDialog() {
     cidade: "",
     estado: "",
   });
+  const [isEdit, setIsEdit] = useState(false);
 
   const { data: addressData } = useFindAddress(formData.cep);
 
@@ -43,6 +60,32 @@ export function RegisterDialog() {
     }
   }, [addressData]);
 
+  useEffect(() => {
+    if (userToEdit) {
+      setFormData({
+        nome: userToEdit.nome,
+        cpf: userToEdit.cpf,
+        cep: userToEdit.cep,
+        logradouro: userToEdit.logradouro,
+        bairro: userToEdit.bairro,
+        cidade: userToEdit.cidade,
+        estado: userToEdit.estado,
+      });
+      setIsEdit(true);
+    } else {
+      setFormData({
+        nome: "",
+        cpf: "",
+        cep: "",
+        logradouro: "",
+        bairro: "",
+        cidade: "",
+        estado: "",
+      });
+      setIsEdit(false);
+    }
+  }, [userToEdit]);
+
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -50,23 +93,50 @@ export function RegisterDialog() {
 
   function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    mutate(formData);
+    if (isEdit && userToEdit?.id) {
+      updateMutate(
+        { id: userToEdit.id, updateData: formData },
+        {
+          onSuccess: () => {
+            onOpenChange(false);
+            if (onClose) {
+              onClose();
+            }
+          },
+        }
+      );
+    } else {
+      createMutate(formData, {
+        onSuccess: () => {
+          setFormData({
+            nome: "",
+            cpf: "",
+            cep: "",
+            logradouro: "",
+            bairro: "",
+            cidade: "",
+            estado: "",
+          });
+          onOpenChange(false);
+          if (onClose) {
+            onClose();
+          }
+        },
+      });
+    }
   }
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button>
-          <PlusCircle className="w-4 h-4 mr-2" />
-          Novo Cadastro
-        </Button>
-      </DialogTrigger>
-
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Novo Cadastro</DialogTitle>
+          <DialogTitle>
+            {isEdit ? "Editar Cadastro" : "Novo Cadastro"}
+          </DialogTitle>
           <DialogDescription>
-            Criando um novo cadastro no sistema
+            {isEdit
+              ? "Editando o cadastro do usuário"
+              : "Criando um novo cadastro no sistema"}
           </DialogDescription>
         </DialogHeader>
 
@@ -97,21 +167,36 @@ export function RegisterDialog() {
 
           <DialogFooter>
             <DialogClose asChild>
-              <Button type="button" variant="outline">
+              <Button type="button" variant="outline" onClick={onClose}>
                 Cancelar
               </Button>
             </DialogClose>
-            <Button type="submit" disabled={isPending}>
-              {isPending ? "Salvando..." : "Salvar"}
+            <Button type="submit" disabled={isCreatePending || isUpdatePending}>
+              {isCreatePending || isUpdatePending ? "Salvando..." : "Salvar"}
             </Button>
           </DialogFooter>
         </form>
 
-        {isSuccess && (
-          <p className="text-green-500">Usuário criado com sucesso!</p>
-        )}
-        {isError && <p className="text-red-500">Erro ao criar o usuário.</p>}
+        {isCreatePending || isUpdatePending ? <p>Processando...</p> : null}
       </DialogContent>
     </Dialog>
+  );
+}
+
+export function NewUserDialog() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button>
+            <PlusCircle className="w-4 h-4 mr-2" />
+            Novo Cadastro
+          </Button>
+        </DialogTrigger>
+        <RegisterDialog open={open} onOpenChange={setOpen} />
+      </Dialog>
+    </>
   );
 }
