@@ -113,12 +113,15 @@ Baixe o projeto
 ### Instalação das dependencias
 
 #### Java/Spring
+
+Na pasta cepManagerServer, rode o comando:
 ```bash
   ./mvn clean install
 
   ./mvnw spring-boot:run
 ```
 #### React
+Na pasta web-app, rode o comando:
 ```bash
   npm install
 
